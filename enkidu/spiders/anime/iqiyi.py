@@ -28,10 +28,14 @@ class IqiyiSpider(scrapy.Spider):
             image = anime.css('a.tw-list-link::attr(v-i71-anim-img)').extract_first()
             image = image[1:-1]
 
+            info = anime.css('p.pic-sub-title::text').extract_first()
+            inner = anime.css('p.pic-inner-title::text').extract_first()
+            info = str(info) + ' | ' + str(inner)
+
             yield {
                 'id': self.name + '::' + key,
-                'title': anime.css('p.pic-sub-title::text').extract_first(),
+                'title': title,
                 'link': self.protocol + ':' + href,
                 'image': self.protocol + ':' + image,
-                'info': anime.css('p.pic-inner-title::text').extract_first()
+                'info': info
             }
