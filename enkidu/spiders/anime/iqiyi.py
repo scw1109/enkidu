@@ -17,7 +17,7 @@ class IqiyiSpider(scrapy.Spider):
             return
 
         for anime in items:
-            title = anime.css('p.pic-sub-title::text').extract_first()
+            title = anime.css('a.pic-title::text').extract_first()
             if not title:
                 continue
 
