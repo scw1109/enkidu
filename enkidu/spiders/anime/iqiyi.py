@@ -2,15 +2,14 @@
 import scrapy
 from string import Template
 
+url = Template('http://list.tw.iqiyi.com/www/4/-------------11-${page}-1-iqiyi--.html')
 
 class IqiyiSpider(scrapy.Spider):
     category = 'anime'
     name = category + '.' + 'iqiyi'
     protocol = 'http'
     allowed_domains = ['list.tw.iqiyi.com']
-    url = Template('http://list.tw.iqiyi.com/www/4/-------------11-${page}-1-iqiyi--.html')
-    page = 1
-    start_urls = [url.substitute(page=page)]
+    start_urls = map(lambda p: url.substitute(page=p), range(1, 20))
 
     def parse(self, response):
         items = response.css('div.plist-item')
@@ -36,7 +35,3 @@ class IqiyiSpider(scrapy.Spider):
                 'image': self.protocol + ':' + image,
                 'info': anime.css('p.pic-inner-title::text').extract_first()
             }
-
-        self.page = self.page + 1
-        next_page = self.url.substitute(page=self.page)
-        yield response.follow(next_page, self.parse)
